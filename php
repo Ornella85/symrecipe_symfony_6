@@ -1,0 +1,1 @@
+/Applications/MAMP/bin/php/php8.1.1/bin/php
