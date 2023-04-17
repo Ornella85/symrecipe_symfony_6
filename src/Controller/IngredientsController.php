@@ -63,4 +63,42 @@ class IngredientsController extends AbstractController
         ]);
     }
 
+    #[Route('/ingredients/edit/{id}', 'ingredients.edit', methods: ['GET', 'POST'])]
+    public function edit(Ingredients $ingredient, Request $request, EntityManagerInterface $manager): Response
+    {
+        $form = $this->createForm(IngredientsFormType::class, $ingredient);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ingredient = $form->getData();
+
+            $manager->persist($ingredient);
+            $manager->flush();
+
+            $this->addFlash(
+                'success',
+                'Votre ingrédient a été modifié avec succès !'
+            );
+
+            return $this->redirectToRoute('ingredients.index');
+        }
+
+        return $this->render('pages/ingredients/edit.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    #[Route('/ingredients/delete/{id}', 'ingredients.delete', methods: ['GET'])]
+    public function delete(EntityManagerInterface $manager,Ingredients $ingredient): Response {
+        $manager->remove($ingredient);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            'Votre ingrédient a été supprimé avec succès !'
+        );
+
+        return $this->redirectToRoute('ingredients.index');
+    }
+
 }

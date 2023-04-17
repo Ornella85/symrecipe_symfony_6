@@ -7,7 +7,7 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a class="nav-link active" href="">Accueil
+                    <a class="nav-link active" href="{{ path('home.index') }}">Accueil
                         <span class="visually-hidden">(current)</span>
                     </a>
                 </li>
@@ -21,11 +21,11 @@
                 </li>
                 {% if app.user %}
                     <li class="nav-item">
-                        <a class="nav-link" href="">Mes ingrédients
+                        <a class="nav-link" href="{{ path('ingredients.index') }}">Mes ingrédients
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="">Mes recettes
+                        <a class="nav-link" href="{{ path('recipes.index') }}">Mes recettes
                         </a>
                     </li>
                 {% endif %}
