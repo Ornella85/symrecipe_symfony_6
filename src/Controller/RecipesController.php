@@ -31,7 +31,7 @@ class RecipesController extends AbstractController
             10
         );
 
-        return $this->render('pages/recipes/index.html.twig', [
+        return $this->render('pages/recipes/login.html.twig', [
             'recipes' => $recipes,
         ]);
     }
