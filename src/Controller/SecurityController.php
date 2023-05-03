@@ -28,4 +28,32 @@ class SecurityController extends AbstractController
         // à laisser vide
     }
 
+    #[Route('/inscription', 'security.registration', methods: ['GET', 'POST'])]
+    public function registration(Request $request, EntityManagerInterface $manager): Response
+    {
+        $user = new Users();
+        $user->setRoles(['ROLE_USER']);
+
+        $form = $this->createForm(RegistrationType::class, $user);
+
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            $user = $form->getData();
+
+            $this->addFlash(
+                'success',
+                'Votre compte a bien été créé.'
+            );
+
+            $manager->persist($user);
+            $manager->flush();
+
+            return $this->redirectToRoute('security.login');
+        }
+
+        return $this->render('pages/security/registration.html.twig', [
+            'form' => $form->createView()
+        ]);
+    }
 }
+
