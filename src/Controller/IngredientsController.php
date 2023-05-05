@@ -31,7 +31,7 @@ class IngredientsController extends AbstractController
             $request->query->getInt('page', 1),
             10
         );
-        return $this->render('pages/ingredients/login.html.twig', [
+        return $this->render('pages/ingredients/index.html.twig', [
             'ingredients' => $ingredients,
         ]);
     }
