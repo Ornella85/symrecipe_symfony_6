@@ -13,7 +13,7 @@
 
             <h1>Mes ingrédients</h1>
 
-            <a href="" class="btn btn-primary">
+            <a href="{{ path('ingredients.new') }}" class="btn btn-primary">
                 Créer un ingrédient
             </a>
 
@@ -60,7 +60,7 @@
         {% else %}
             <h4>Il n'y a pas d'ingrédients</h4>
 
-            <a href="" class="btn btn-primary">
+            <a href="{{ path('ingredients.new') }}" class="btn btn-primary">
                 Créer un ingrédient
             </a>
         {% endif %}

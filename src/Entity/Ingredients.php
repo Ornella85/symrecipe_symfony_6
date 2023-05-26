@@ -14,7 +14,7 @@ class Ingredients
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    private ?int $id;
+    private ?int $id = null;
 
     #[ORM\Column(length: 50)]
     #[Assert\NotBlank]
@@ -30,6 +30,10 @@ class Ingredients
     #[ORM\Column]
     #[Assert\NotNull]
     private ?\DateTimeImmutable $createdAt;
+
+    #[ORM\ManyToOne(inversedBy: 'ingredient')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Users $user = null;
 
     /* Constructor */
     public function __construct()
@@ -82,4 +86,17 @@ class Ingredients
     {
         return $this->name;
     }
+
+    public function getUser(): ?Users
+    {
+        return $this->user;
+    }
+
+    public function setUser(?Users $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
 }

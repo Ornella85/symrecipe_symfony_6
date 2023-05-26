@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}SymRecipe - Mes recette
+{% block title %}SymRecipe - Mes recettes
 {% endblock %}
 
 {% block body %}
@@ -11,9 +11,9 @@
             </div>
         {% endfor %}
 
-        <h1>Mes recette</h1>
+        <h1>Mes recettes</h1>
 
-        <a href="" class="btn btn-primary">
+        <a href="{{ path('recipes.new') }}" class="btn btn-primary">
             Créer une recette
         </a>
 
@@ -61,7 +61,7 @@
         {% else %}
             <h4>Il n'y a pas de recette</h4>
 
-            <a href="" class="btn btn-primary">
+            <a href="{{ path('recipes.new') }}" class="btn btn-primary">
                 Créer une recette
             </a>
         {% endif %}

@@ -16,10 +16,19 @@ use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class RecipesType extends AbstractType
 {
+    private TokenStorageInterface $token;
+
+    public function __construct(
+        TokenStorageInterface $token
+    )
+    {
+        $this->token = $token;
+    }
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
@@ -133,7 +142,9 @@ class RecipesType extends AbstractType
                 'class' => Ingredients::class,
                 'query_builder' => function (IngredientsRepository $r) {
                     return $r->createQueryBuilder('i')
-                        ->orderBy('i.name', 'ASC');
+                        ->where (('i.user = :user'))
+                        ->orderBy('i.name', 'ASC')
+                        ->setParameter ('user', $this->token->getToken()->getUser()); // permet de récupérer les ingrédients du User uniquement
                 },
                 'label_attr' => [
                     'class' => 'form-label mt-4'

@@ -6,6 +6,8 @@ use App\Entity\Ingredients;
 use App\Form\IngredientsFormType;
 use App\Repository\IngredientsRepository;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
@@ -24,10 +26,11 @@ class IngredientsController extends AbstractController
      */
 
     #[Route('/ingredients', name: 'ingredients.index', methods:['GET'])]
+    #[IsGranted('ROLE_USER')]
     public function index(IngredientsRepository $ingredientsRepository, PaginatorInterface $paginator, Request $request): Response
     {
         $ingredients = $paginator->paginate(
-            $ingredientsRepository->findAll (),
+            $ingredientsRepository->findBy (['user' => $this->getUser ()]),
             $request->query->getInt('page', 1),
             10
         );
@@ -42,6 +45,7 @@ class IngredientsController extends AbstractController
      * @return Response
      */
     #[Route('/ingredients/new', name: 'ingredients.new', methods:['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $manager): Response
     {
         $ingredient = new Ingredients();
@@ -50,6 +54,7 @@ class IngredientsController extends AbstractController
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             $ingredient = $form->getData();
+            $ingredient->setUser($this->getUser());
             $manager->persist($ingredient);
             $manager->flush();
 
@@ -63,6 +68,7 @@ class IngredientsController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and user === ingredient.getUser()")]
     #[Route('/ingredients/edit/{id}', 'ingredients.edit', methods: ['GET', 'POST'])]
     public function edit(Ingredients $ingredient, Request $request, EntityManagerInterface $manager): Response
     {

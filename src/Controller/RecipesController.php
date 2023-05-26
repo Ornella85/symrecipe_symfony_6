@@ -7,6 +7,8 @@ use App\Form\RecipesType;
 use App\Repository\RecipesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -24,9 +26,8 @@ class RecipesController extends AbstractController
     #[Route('/', name: 'recipes.index', methods: ['GET'])]
     public function index(RecipesRepository $recipesRepository, PaginatorInterface $paginator, Request $request): Response
     {
-
         $recipes = $paginator->paginate(
-            $recipesRepository->findAll (),
+            $recipesRepository->findBy (['user' => $this->getUser ()]),
             $request->query->getInt('page', 1),
             10
         );
@@ -37,6 +38,7 @@ class RecipesController extends AbstractController
     }
 
     #[Route('/new', name: 'recipes.new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_USER')]
     public function new(Request $request, EntityManagerInterface $manager): Response
     {
         $recipe = new Recipes();
@@ -45,7 +47,7 @@ class RecipesController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $recipe = $form->getData();
-
+            $recipe->setUser($this->getUser());
             $manager->persist($recipe);
             $manager->flush();
 
@@ -72,6 +74,7 @@ class RecipesController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and user === recipe.getUser()")]
     #[Route('/{id}/edit', name: 'recipes.edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Recipes $recipe, EntityManagerInterface $manager): Response
     {
