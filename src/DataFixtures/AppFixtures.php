@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use App\Entity\Ingredients;
+use App\Entity\Marks;
 use App\Entity\Recipes;
 use App\Entity\Users;
 use Doctrine\Bundle\FixturesBundle\Fixture;
@@ -78,6 +79,17 @@ class AppFixtures extends Fixture
             $manager->persist($recipe);
         }
 
+        //Marks
+        foreach ($recipes as $recipe){
+            for ($l = 0; $l < mt_rand (0,4); $l++)
+            {
+                $mark = new Marks();
+                $mark->setMark (mt_rand(0,5))
+                    ->setUser($users[mt_rand(0, count($users) - 1)])
+                    ->setRecipe($recipe);
+                $manager->persist($mark);
+            }
+        }
         $manager->flush();
     }
 }

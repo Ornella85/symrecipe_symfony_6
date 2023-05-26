@@ -14,7 +14,7 @@
     {% endfor %}
 
     <h1><h1 class="mt-4">{{ recipe.name }}</h1>
-
+    <p> la moyenne de cette recette est de {{ recipe.average|number_format(2,'.', '.') }} /5</p>
     <table class="table">
         <tbody>
             <tr>
@@ -80,6 +80,9 @@
         {% endfor %}
     </div>
 
+    <div class="mark">
+        {{ form(form) }}
+    </div>
     <div class="mt-4">
     <a href="{{ path('recipes.index') }}">Retour à la liste</a>
 
