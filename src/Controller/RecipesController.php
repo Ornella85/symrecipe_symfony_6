@@ -7,12 +7,14 @@ use App\Form\RecipesType;
 use App\Repository\RecipesRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\ItemInterface;
 
 #[Route('/recipes')]
 class RecipesController extends AbstractController
@@ -36,6 +38,30 @@ class RecipesController extends AbstractController
             'recipes' => $recipes,
         ]);
     }
+
+    #[Route('/community', 'recipes.community', methods: ['GET'])]
+    public function indexPublic(
+        RecipesRepository $repository,
+        PaginatorInterface $paginator,
+        Request $request
+    ): Response {
+        $cache = new FilesystemAdapter();
+        $data = $cache->get('recipes', function (ItemInterface $item) use ($repository) {
+            $item->expiresAfter(15);
+            return $repository->findPublicRecipe(null);
+        });
+
+        $recipes = $paginator->paginate(
+            $data,
+            $request->query->getInt('page', 1),
+            10
+        );
+
+        return $this->render('pages/recipes/community.html.twig', [
+            'recipes' => $recipes
+        ]);
+    }
+
 
     #[Route('/new', name: 'recipes.new', methods: ['GET', 'POST'])]
     #[IsGranted('ROLE_USER')]
@@ -66,6 +92,7 @@ class RecipesController extends AbstractController
         ]);
     }
 
+    #[Security("is_granted('ROLE_USER') and recipe.getIsPublic() === true")]
     #[Route('/{id}', name: 'recipes.show', methods: ['GET'])]
     public function show(Recipes $recipe): Response
     {

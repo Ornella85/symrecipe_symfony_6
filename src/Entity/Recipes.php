@@ -54,6 +54,9 @@ class Recipes
     private ?bool $isFavorite = null;
 
     #[ORM\Column]
+    private ?bool $isPublic = null;
+
+    #[ORM\Column]
     #[Assert\NotNull]
     private ?\DateTimeImmutable $createdAt;
 
@@ -158,7 +161,7 @@ class Recipes
         return $this;
     }
 
-    public function isIsFavorite(): ?bool
+    public function getIsFavorite(): ?bool
     {
         return $this->isFavorite;
     }
@@ -166,6 +169,18 @@ class Recipes
     public function setIsFavorite(bool $isFavorite): self
     {
         $this->isFavorite = $isFavorite;
+
+        return $this;
+    }
+
+    public function getIsPublic(): ?bool
+    {
+        return $this->isPublic;
+    }
+
+    public function setIsPublic(bool $isPublic): self
+    {
+        $this->isPublic = $isPublic;
 
         return $this;
     }
@@ -229,4 +244,5 @@ class Recipes
 
         return $this;
     }
+
 }
