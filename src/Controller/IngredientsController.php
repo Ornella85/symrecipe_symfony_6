@@ -95,6 +95,7 @@ class IngredientsController extends AbstractController
     }
 
     #[Route('/ingredients/delete/{id}', 'ingredients.delete', methods: ['GET'])]
+    #[Security("is_granted('ROLE_USER') and user === ingredient.getUser()")]
     public function delete(EntityManagerInterface $manager,Ingredients $ingredient): Response {
         $manager->remove($ingredient);
         $manager->flush();

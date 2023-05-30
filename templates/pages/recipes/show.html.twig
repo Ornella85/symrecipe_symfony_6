@@ -26,6 +26,10 @@
                 <td>{{ recipe.name }}</td>
             </tr>
             <tr>
+                <th>Image</th>
+                <td><img style="max-width: 100px;" src="{{ vich_uploader_asset(recipe, 'imageFile') }}"></td>
+            </tr>
+            <tr>
                 {% if recipe.time %}
                 <th>Temps (en minute)</th>
                 <td>{{ recipe.time }}</td>
@@ -69,6 +73,10 @@
             <tr>
                 <th>Mis à jour le</th>
                 <td>{{ recipe.updatedAt ? recipe.updatedAt|date('d-m-Y') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Photo</th>
+                <td>{{ recipe.imageFile }}</td>
             </tr>
         </tbody>
     </table>

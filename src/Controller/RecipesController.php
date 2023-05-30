@@ -95,7 +95,7 @@ class RecipesController extends AbstractController
         ]);
     }
 
-    #[Security("is_granted('ROLE_USER') and recipe.getIsPublic() === true")]
+    #[Security("is_granted('ROLE_USER') and (recipe.getIsPublic() === true || user === recipe.getUser())")]
     #[Route('/{id}', name: 'recipes.show', methods: ['GET', 'POST'])]
     public function show(
         Recipes $recipe,
@@ -169,6 +169,7 @@ class RecipesController extends AbstractController
      * @return Response
      */
     #[Route('/{id}', name: 'recipes.delete', methods: ['POST'])]
+    #[Security("is_granted('ROLE_USER') and user === recipes.getUser()")]
     public function delete(Request $request, Recipes $recipe, RecipesRepository $recipesRepository): Response
     {
         if ($this->isCsrfTokenValid('delete'.$recipe->getId(), $request->request->get('_token'))) {
